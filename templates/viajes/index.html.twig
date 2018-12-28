@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<style>
+  .inp{width: 100%;
+      height: 35px;
+      border-radius:5px;
+      border: .5px rgb(165, 173, 218) solid;
+      }
+
+    .lab{margin-top:10px;}
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Nuevo viaje</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        {{ form_start(formulario) }}
+
+        <div class="lab">Chofer</div>
+        {{ form_widget(formulario.chofer,  { 'attr': {'class': 'inp'} })  }}
+
+        <div class="lab">Desde</div>
+        {{ form_widget(formulario.origen,  { 'attr': {'class': 'inp'} })  }}
+
+        <div class="lab">Hasta</div>
+        {{ form_widget(formulario.destino,  { 'attr': {'class': 'inp'} }) }}
+        {{ form_end(formulario) }}
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Planilla de viajes</h1>
+    <p class="lead">No se podrá abrir planilla a los choferes que deban comisión.</p>
+    <hr class="my-4">
+    <p>La carga de datos es exclusiva responsabilidad del encargado</p>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+      Nuevo Viaje
+    </button>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-9">
+
+      <table class="table table-hover">
+        <tr>
+          <td>Chofer</td>
+          <td>Origen</td>
+          <td>Destino</td>
+          <td>$</td>
+        </tr>
+
+        {% for viaje in viajes %}
+          <tr>
+            <td>{{ viaje.chofer }}</td>
+            <td >{{ viaje.origen }} <span class="badge badge-secondary">{{ viaje.salida|date("H:i") }}</span></td>
+            <td >{{ viaje.destino }} <span class="badge badge-secondary">{{ viaje.llegada|date("H:i") }}</span></td>
+            <td>{{ viaje.monto }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+
+    </div>
+
+    <div calss="col-lg-1">
+    </div>
+
+    <div class="col-lg-3">
+
+      <div class="row">
+        <div class="col">
+          <div class="alert-info card text-center" style="">
+            <div class="card-body">
+              <h4 class="card-title">{{ viajes|length }}</h4>
+              <p class="card-text">Viajes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="alert-info card text-center" style="margin-top:10px;">
+              <div class="card-body">
+                <h4 class="card-title">4</h4>
+                <p class="card-text">Choferes</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+      </div>
+{% endblock %}
