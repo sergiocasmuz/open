@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+
+<div class="container">
+
+  <div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Ordenes Diarias</h1>
+    <p class="lead">No se podrá abrir una nueva orden si no se encuentran cerradas las anteriores</p>
+    <hr class="my-4">
+
+    <p>La carga de datos es exclusiva responsabilidad del encargado</p>
+
+    {{ form_start(formulario) }}
+    {{ form_widget(formulario.ordenN) }}
+    {{ form_end(formulario) }}
+
+  </div>
+
+</div>
+
+<table class="table table-hover">
+  <tr>
+    <th>Fecha</th>
+    <th>Entradas</th>
+    <th>Salidas</th>
+    <th>Total</th>
+  </tr>
+
+  {% for orden in ordenes %}
+    <tr>
+      <td>{{ orden.fecha|date("Y-m-d") }}</td>
+      <td>{{ orden.ingresos }}</td>
+      <td>{{ orden.salidas }}</td>
+      <td>{{ orden.total }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+
+</div>
+{% endblock %}

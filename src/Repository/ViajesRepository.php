@@ -19,22 +19,50 @@ class ViajesRepository extends ServiceEntityRepository
         parent::__construct($registry, Viajes::class);
     }
 
-    // /**
-    //  * @return Viajes[] Returns an array of Viajes objects
-    //  */
-    /*
-    public function findByExampleField($value)
+     /**
+      * @return Viajes[] Returns an array of Viajes objects
+      */
+
+    public function findByDeuda($idChofer)
     {
         return $this->createQueryBuilder('v')
-            ->andWhere('v.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('v.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
+            -> select("sum(v.monto)")
+            -> andWhere('v.chofer = :chofi and v.estado = :estado')
+            -> setParameter('chofi', $idChofer)
+            -> setParameter('estado', '0')
+            -> orderBy('v.id', 'ASC')
+            -> getQuery()
+            -> getResult()
         ;
     }
-    */
+
+
+    public function findByRec($idChofer,$od)
+    {
+        return $this->createQueryBuilder('v')
+            -> select("sum(v.monto)")
+            -> andWhere('v.chofer = :chofi and v.oDiaria = :od')
+            -> setParameter('chofi', $idChofer)
+            -> setParameter('od', $od)
+            -> orderBy('v.id', 'ASC')
+            -> getQuery()
+            -> getResult()
+        ;
+    }
+
+
+    public function findByCierre($idChofer)
+    {
+        return $this->createQueryBuilder('v')
+            -> andWhere('v.chofer = :chofi and v.estado = :estado')
+            -> setParameter('chofi', $idChofer)
+            -> setParameter('estado', '0')
+            -> orderBy('v.id', 'ASC')
+            -> getQuery()
+            -> getResult()
+        ;
+    }
+
 
     /*
     public function findOneBySomeField($value): ?Viajes

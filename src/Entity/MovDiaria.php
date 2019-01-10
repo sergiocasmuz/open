@@ -19,72 +19,72 @@ class MovDiaria
     /**
      * @ORM\Column(type="datetime")
      */
-    private $egreso;
+    private $fecha;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $detalle;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $suma;
+    private $monto;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $deuda;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $pago;
+    private $oDiaria;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getEgreso(): ?\DateTimeInterface
+    public function getFecha(): ?\DateTimeInterface
     {
-        return $this->egreso;
+        return $this->fecha;
     }
 
-    public function setEgreso(\DateTimeInterface $egreso): self
+    public function setFecha(\DateTimeInterface $fecha): self
     {
-        $this->egreso = $egreso;
+        $this->fecha = $fecha;
 
         return $this;
     }
 
-    public function getSuma(): ?int
+    public function getDetalle(): ?string
     {
-        return $this->suma;
+        return $this->detalle;
     }
 
-    public function setSuma(int $suma): self
+    public function setDetalle(string $detalle): self
     {
-        $this->suma = $suma;
+        $this->detalle = $detalle;
 
         return $this;
     }
 
-    public function getDeuda(): ?int
+    public function getMonto(): ?int
     {
-        return $this->deuda;
+        return $this->monto;
     }
 
-    public function setDeuda(int $deuda): self
+    public function setMonto(int $monto): self
     {
-        $this->deuda = $deuda;
+        $this->monto = $monto;
 
         return $this;
     }
 
-    public function getPago(): ?int
+    public function getODiaria(): ?int
     {
-        return $this->pago;
+        return $this->oDiaria;
     }
 
-    public function setPago(int $pago): self
+    public function setODiaria(int $oDiaria): self
     {
-        $this->pago = $pago;
+        $this->oDiaria = $oDiaria;
 
         return $this;
     }

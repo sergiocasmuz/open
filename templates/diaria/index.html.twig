@@ -3,18 +3,121 @@
 {% block title %}Hello {{ controller_name }}!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<script>
+  $(document).ready(function(){
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'src/Controller/DiariaController.php'|file_link(0) }}">src/Controller/DiariaController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'templates/diaria/index.html.twig'|file_link(0) }}">templates/diaria/index.html.twig</a></code></li>
-    </ul>
+    $("#abrir").click(function(){
+      $(form).submit();
+    })
+
+    $("* .cerrar").click(function(){
+        var id = $(this).val();
+        window.location.href = "/cierre/"+id;
+
+    })
+
+
+  })
+</script>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Abrir planilla #</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body ">
+        <div class="form-group">
+        {{ form_start(formIniDia) }}
+        {{ form_widget(formIniDia) }}
+        {{ form_end(formIniDia) }}
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button id="abrir" type="button" class="btn btn-secondary" data-dismiss="modal">Abrir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="container">
+
+  <div class="jumbotron">
+    <h1 class="display-4">Planilla Diaria</h1>
+    <p class="lead">No se podrá abrir planilla a los choferes que deban comisión.</p>
+    <hr class="my-4">
+    <p>Total caja $</p>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Cerrar día</button>
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Nuevo movimiento</button>
+
+</div>
+
+<div class="row">
+  <div class="alert alert-info col-12">
+    <h3>Entradas</h3>
+    <h4>Subtotal $</h4>
+    <hr>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Abrir planilla de chofer</button>
+  </div>
+
+
+
+  <br><br>
+  <table class="table table-hover">
+    <tr>
+      <th style=" width:150px;">Chofer</th>
+      <th style="text-align:center; width:150px;">Rec</th>
+      <th style="text-align:center;">%</th>
+      <th style="text-align:center;">Comisión</th>
+      <th>Otros</th>
+    </tr>
+
+    {% for chofer in chofiDiaria %}
+
+    {% if  chofer["estado"]   == 0 %}
+      {% set estado = "Cerrar" %}
+      {% set btn = "danger" %}
+    {% else %}
+      {% set estado = "Cerrado" %}
+      {% set btn = "success" %}
+    {% endif %}
+
+    <tr>
+      <td>{{ chofer["nombre"] }}</td>
+      <td style="text-align:center;">{{ chofer["suma"] }}</td>
+      <td style="text-align:center;">{{ chofer["porc"] }}</td>
+      <td style="text-align:center;">{{ chofer["comi"] }}</td>
+      <td><button type="button" class="btn btn-{{ btn }} cerrar" value="{{ chofer["id"] }}">{{ estado }}</button></td>
+    </tr>
+    {% endfor %}
+  </table>
+
+    <table class="table table-hover">
+      <th>Detalle</th>
+      <th>$</th>
+    </table>
+  </div>
+
+  <div class="row">
+    <div class="alert alert-info col-12">
+      <h3>Salidas</h3>
+      <h4>Subtotal $</h4>
+      <hr>
+
+    </div>
+
+    <table class="table table-hover">
+      <th>Detalle</th>
+      <th>$</th>
+    </table>
+  </div>
+
 </div>
 {% endblock %}

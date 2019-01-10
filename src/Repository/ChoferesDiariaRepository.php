@@ -19,22 +19,38 @@ class ChoferesDiariaRepository extends ServiceEntityRepository
         parent::__construct($registry, ChoferesDiaria::class);
     }
 
-    // /**
-    //  * @return ChoferesDiaria[] Returns an array of ChoferesDiaria objects
-    //  */
-    /*
-    public function findByExampleField($value)
+     /**
+      * @return ChoferesDiaria[] Returns an array of ChoferesDiaria objects
+      */
+
+    public function findByOrdenDiaria($idChofer,$od)
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('c.choferId = :idChofer and c.oDiaria= :od and c.estado = :estado')
+            ->setParameter('idChofer', $idChofer)
+            ->setParameter('od', $od)
+            ->setParameter('estado', 0)
             ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+            ->setMaxResults(100)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+
+
+    public function findByCheck($idChofer, $od)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.choferId = :idChofer and c.oDiaria= :od and c.estado = :estado')
+            ->setParameter('idChofer', $idChofer)
+            ->setParameter('od', $od)
+            ->setParameter('estado', "0")
+            ->orderBy('c.id', 'ASC')
+            ->setMaxResults(100)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     /*
     public function findOneBySomeField($value): ?ChoferesDiaria

@@ -61,6 +61,11 @@ class Choferes
      */
     private $color;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $porcentaje;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -170,6 +175,18 @@ class Choferes
     public function setColor(string $color): self
     {
         $this->color = $color;
+
+        return $this;
+    }
+
+    public function getPorcentaje(): ?int
+    {
+        return $this->porcentaje;
+    }
+
+    public function setPorcentaje(string $porcentaje): self
+    {
+        $this->porcentaje = $porcentaje;
 
         return $this;
     }

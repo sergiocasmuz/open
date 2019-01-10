@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+
+<script type="text/javascript">
+    $(function () {
+        $('#date').datetimepicker();
+
+        $('#time1').datetimepicker();
+
+        $('#time2').datetimepicker();
+    });
+</script>
+
+<div class="container">
+
+  <div class="jumbotron jumbotron-fluid">
+      <h1 class="display-4">Editar viaje</h1>
+      <p class="lead"></p>
+      <hr class="my-4">
+      <a href="/viajes" class="btn btn-primary">Lista de viajes</a>
+
+  </div>
+
+  <div class="container">
+
+    <div class="row">
+    <div class="alert-success col-7">
+      <br>
+      <br>
+    {{ form_start(formulario) }}
+
+      <div class="row">
+        <div class="col">
+        {{ form_label(formulario.fecha) }}
+        <div class='input-group date' id='date'>
+          {{ form_widget(formulario.fecha, {'attr':{' data-date-format':'DD/MM/Y','class':'form-control'}}) }}
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="col">
+          {{ form_label(formulario.chofer) }}
+          {{ form_widget(formulario.chofer) }}
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="col">
+          {{ form_label(formulario.salida) }}
+          <div class='input-group date' id='time1'>
+            {{ form_widget(formulario.salida, {'attr':{' data-date-format':'H:mm','class':'form-control'}}) }}
+              <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-time"></span>
+              </span>
+            </div>
+          </div>
+
+        <div class="col">
+            {{ form_label(formulario.origen) }}
+            {{ form_widget(formulario.origen) }}
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col">
+          {{ form_label(formulario.llegada) }}
+          <div class='input-group date' id='time2'>
+            {{ form_widget(formulario.llegada, {'attr':{' data-date-format':'H:mm','class':'form-control'}}) }}
+              <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-time"></span>
+              </span>
+            </div>
+        </div>
+
+        <div class="col">
+          {{ form_label(formulario.destino) }}
+          {{ form_widget(formulario.destino) }}
+        </div>
+      </div>
+      <br>
+
+      <div class="row">
+        <div class="col">
+          {{ form_label(formulario.monto) }}
+          {{ form_widget(formulario.monto) }}
+        </div>
+
+        <div class="col">
+          <br>
+          {{ form_widget(formulario.guardar) }}
+        </div>
+      </div>
+    {{ form_end(formulario) }}
+    <br>
+    <br>
+    </div>
+
+    <div class="col-1"></div>
+
+  <div class="alert-success col-3" style="text-align:center;">
+    <h1 style="margin-top:80px;">Viaje #{{idViaje}}</h1>
+    <button class="btn btn-danger">Borrar</button>
+    <hr>
+    <p>Los viajes eliminados son almacenados en la "papelera" </p>
+  </div>
+</div>
+</div>
+{% endblock %}

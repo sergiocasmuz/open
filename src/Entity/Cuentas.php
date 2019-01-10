@@ -22,6 +22,7 @@ class Cuentas
     private $nroCuenta;
 
     /**
+     * @ORM\GeneratedValue()
      * @ORM\Column(type="datetime")
      */
     private $fecha;
@@ -32,9 +33,17 @@ class Cuentas
     private $monto;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
-    private $estado;
+    private $oDiaria;
+
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $detalle;
+
+
 
     public function getId(): ?int
     {
@@ -65,6 +74,7 @@ class Cuentas
         return $this;
     }
 
+
     public function getMonto(): ?int
     {
         return $this->monto;
@@ -77,15 +87,30 @@ class Cuentas
         return $this;
     }
 
-    public function getEstado(): ?int
+    public function getODiaria(): ?int
     {
-        return $this->estado;
+        return $this->oDiaria;
     }
 
-    public function setEstado(int $estado): self
+    public function setODiaria(?int $oDiaria): self
     {
-        $this->estado = $estado;
+        $this->oDiaria = $oDiaria;
 
         return $this;
     }
+
+
+    public function getDetalle(): ?string
+    {
+        return $this->detalle;
+    }
+
+    public function setDetalle(?string $detalle): self
+    {
+        $this->detalle = $detalle;
+
+        return $this;
+    }
+
+
 }

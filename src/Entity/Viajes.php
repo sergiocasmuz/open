@@ -37,7 +37,7 @@ class Viajes
     private $destino;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="time")
      */
     private $llegada;
 
@@ -55,6 +55,16 @@ class Viajes
      * @ORM\Column(type="integer")
      */
     private $chofer;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $op;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $oDiaria;
 
 
     public function getId(): ?int
@@ -110,12 +120,12 @@ class Viajes
         return $this;
     }
 
-    public function getLlegada(): ?string
+    public function getLlegada(): ?\DateTimeInterface
     {
         return $this->llegada;
     }
 
-    public function setLlegada(?string $llegada): self
+    public function setLlegada(\DateTimeInterface $llegada): self
     {
         $this->llegada = $llegada;
 
@@ -155,6 +165,31 @@ class Viajes
     public function setChofer(int $chofer): self
     {
         $this->chofer = $chofer;
+
+        return $this;
+    }
+
+
+    public function getOp(): ?int
+    {
+        return $this->op;
+    }
+
+    public function setOp(int $op): self
+    {
+        $this->op = $op;
+
+        return $this;
+    }
+
+    public function getODiaria(): ?int
+    {
+        return $this->oDiaria;
+    }
+
+    public function setODiaria(int $oDiaria): self
+    {
+        $this->oDiaria = $oDiaria;
 
         return $this;
     }

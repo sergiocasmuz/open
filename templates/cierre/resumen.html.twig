@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello {{ controller_name }}!{% endblock %}
+
+{% block body %}
+
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    $("#cierreBTN").click(function(){
+      $('#cierre form').submit();
+    })
+
+    $("#aplazoBTN").click(function(){
+      $('#aplazo form').submit();
+    })
+
+
+  })
+</script>
+
+<div class="container">
+  <div class="jumbotron jumbotron-fluid">
+      <h1 class="display-4">Resumen de viajes</h1>
+      <p class="lead">Todos los viajes por pagar comisión.</p>
+      <hr class="my-4">
+
+      <div class="row">
+        <div class="col-6">
+          <p style="font-size:20px;">Recaudación: ${{ rec}} </p>
+          <p style="font-size:15px;">Porcentaje a pagar: % 20 </p>
+        </div>
+
+        <div class="col-6" style="text-align:center;">
+          <h3>Total a pagar ${{ deuda }}</h3>
+          <!-- Button trigger modal -->
+          <button style="width:100px;" type="button" id="cierreBTN" class="btn btn-danger">Cerrar</button>
+          <button style="width:100px;" type="button" id="aplazoBTN" class="btn btn-info">Aplazar</button>
+        </div>
+
+        <div id="cierre">
+          {{ form_start(formCierre) }}
+          {{ form_widget(formCierre) }}
+          {{ form_end(formCierre) }}
+        </div>
+
+        <div id="aplazo">
+          {{ form_start(formAplazar) }}
+          {{ form_widget(formAplazar) }}
+          {{ form_end(formAplazar) }}
+        </div>
+      </div>
+    </div>
+
+
+  <table class="table table-hover">
+    <tr>
+      <th>Fecha</th>
+      <th>Origen</th>
+      <th>Destino</th>
+      <th>$</th>
+    </tr>
+
+    {% for viaje in viajes %}
+      <tr>
+        <td>2019-5-1</td>
+        <td><span class="badge badge-secondary">{{ viaje.salida|date("H:i") }}</span> {{ viaje.origen }}</td>
+        <td><span class="badge badge-secondary">{{ viaje.llegada|date("H:i") }}</span> {{ viaje.destino }}</td>
+        <td>{{ viaje.monto }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

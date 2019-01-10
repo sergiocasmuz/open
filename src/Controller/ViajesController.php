@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Viajes;
+use App\Entity\OrdenDiaria;
+use App\Entity\Choferes;
+use App\Entity\ChoferesDiaria;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,39 +17,89 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use App\Entity\Choferes;
-
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Doctrine\DBAL\Driver\Connection;
 
 class ViajesController extends AbstractController
 {
     /**
      * @Route("/viajes", name="viajes")
      */
-    public function index(Request $request)
+    public function index(Connection $connection, Request $request)
     {
        $em = $this -> getDoctrine() -> getManager();
-       $viajes = $em -> getRepository(Viajes::class) -> findAll();
+       $viajes = $em -> getRepository(Viajes::class) -> findBy(array(),array('id' => 'desc'));
+       $od = $em -> getRepository(OrdenDiaria::class) -> findByOD();
+       $viajesCHOFI = array();
+       //print_r($od[0][0]->getId());
 
-       $choferes = $em -> getRepository(Choferes::class) -> findAll();
-       $list[""]="";
+       $c = 0;
+       foreach ($viajes as $viaje) {
+         $choferes = $em -> getRepository(Choferes::class) -> find($viaje->getChofer());
 
-       foreach ($choferes as $chofer) {
-         $list[$chofer -> getNombre()] = $chofer -> getId();
+         $viajesCHOFI[$c]["id"] = $viaje -> getId();
+         $viajesCHOFI[$c]["idChofer"] = $viaje -> getChofer();
+         $viajesCHOFI[$c]["chofer"] = $choferes -> getNombre()." #".$viaje -> getChofer();
+         $viajesCHOFI[$c]["origen"] = $viaje -> getOrigen();
+         $viajesCHOFI[$c]["destino"] = $viaje -> getDestino();
+         $viajesCHOFI[$c]["salida"] = $viaje -> getSalida();
+         $viajesCHOFI[$c]["llegada"] = $viaje -> getLlegada();
+         $viajesCHOFI[$c]["monto"] = $viaje -> getMonto();
+         $c++;
+       }
+
+
+
+       $sql = "SELECT * from choferes_diaria chD
+                               left join choferes ch on ch.id = chD.chofer_id
+                               where chD.o_diaria=? and chD.estado= ?";
+       $stmt = $connection->prepare($sql);
+       $stmt->bindValue(1, $od[0][1]);
+       $stmt->bindValue(2, 0);
+       $stmt->execute();
+       $chof= $stmt->fetchAll();
+
+       $list[""] = "";
+       foreach ($chof as $choferDia) {
+       $list[$choferDia["nombre"]." #".$choferDia["id"]] = $choferDia["id"];
        }
 
         $formulario = $this -> createFormBuilder()
 
-          -> add ('chofer', ChoiceType::class, array('choices' => array('----------------' => $list )))
-          -> add ('origen', TextType::class)
-          -> add ('destino', TextType::class)
+          -> add ('chofer', ChoiceType::class, array('choices' => array('----------------' => $list), 'attr' => array('class' => 'form-control')))
+          -> add ('salida', TextType::class, array( 'attr'=> array('class' => 'form-control' ) ))
+          -> add ('origen', TextType::class, array( 'attr'=> array('class' => 'form-control' ) ))
+          -> add ('destino', TextType::class, array( 'attr'=> array('class' => 'form-control' ) ))
           -> getForm()
           -> handleRequest($request);
 
-          if ( $formulario->isSubmitted() && $formulario->isValid()) {}
+          if ( $formulario->isSubmitted() && $formulario->isValid()) {
+
+              $rta = $formulario -> getData();
+
+              $viajes = new Viajes();
+              //  \DateTime::createFromFormat('H:i:s', "01:00:00" )
+              $viajes -> setDate(\DateTime::createFromFormat('Y-m-d', date("Y-m-d")));
+              $viajes -> setSalida(\DateTime::createFromFormat('H:i:s', "01:00:00" )  );
+              $viajes -> setOrigen($rta["origen"]);
+              $viajes -> setDestino($rta["destino"]);
+              $viajes -> setLlegada(\DateTime::createFromFormat('H:i:s', "01:00:00" )  );
+              $viajes -> setMonto("0");
+              $viajes -> setEstado("0");
+              $viajes -> setChofer($rta["chofer"]);
+              $viajes -> setOp("0");
+              $viajes -> setODiaria("8");
+
+              $em -> persist($viajes);
+              $em -> flush();
+
+                return $this->redirect("/viajes");
+          }
 
         return $this->render('viajes/index.html.twig', [
             'formulario' => $formulario -> createView(),
-            'viajes' => $viajes
+            'viajes' => $viajesCHOFI,
         ]);
     }
 }
