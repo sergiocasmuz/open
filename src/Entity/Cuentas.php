@@ -43,6 +43,11 @@ class Cuentas
      */
     private $detalle;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $idViaje;
+
 
 
     public function getId(): ?int
@@ -109,6 +114,18 @@ class Cuentas
     {
         $this->detalle = $detalle;
 
+        return $this;
+    }
+
+
+    public function getIdViaje(): ?int
+    {
+        return $this->idViaje;
+    }
+
+    public function setIdViaje(int $idViaje): self
+    {
+        $this->idViaje = $idViaje;
         return $this;
     }
 

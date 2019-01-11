@@ -53,10 +53,6 @@ class EditarController extends AbstractController
         $list[$choferDia["nombre"]." #".$choferDia["id"]] = $choferDia["id"];
         }
 
-
-
-
-
         $f = $viajes -> getDate();
         $f1 = $f->format('d/m/Y');
 
@@ -68,9 +64,13 @@ class EditarController extends AbstractController
 
         $cCorrientes = $em -> getRepository(CuentasCorrientes::class) -> findAll();
 
-        $CC = $em -> getRepository(CuentasCorrientes::class) -> find($viajes->getCc());
+        if($viajes->getCc() == null){$listCC[""] = "";}
+          else{
+            $CC = $em -> getRepository(CuentasCorrientes::class) -> find($viajes->getCc());
+            $listCC[$CC->getNombre()." ".$CC->getApellido()] = $viajes->getCc();
+          }
 
-        $listCC[$CC->getNombre()." ".$CC->getApellido()] = $viajes->getCc();
+
         foreach ($cCorrientes as $cc) {
         $listCC[$cc->getNombre()." ".$cc->getApellido()] = $cc->getId();
         }
@@ -137,17 +137,34 @@ class EditarController extends AbstractController
               $cuentas -> setMonto($R["monto"]);
               $cuentas -> setODiaria($od[0][0]->getId());
               $cuentas -> setDetalle("CC viaje #".$viajes->getId());
+              $cuentas -> setIdViaje($viajes->getId());
               $em -> persist($cuentas);
               $em -> flush();
 
             }
 
-
               $link = '/viajes';
-
               return $this->redirect($link);
 
           }
+
+
+          $formBorrar = $this -> createFormBuilder()
+          -> add('borrar', SubmitType::class, array('attr'=> array('class'=>'btn btn-danger')))
+          -> getForm()
+          -> handleRequest($request);
+
+          if ( $formulario->isSubmitted() && $formulario->isValid()) {
+
+              $borrar = $this -> getRepository(Viajes::class) -> find($idViaje);
+              $em -> remove($borrar);
+              $em->flush();
+
+              $borrar = $this -> getRepository(Cuentas::class) -> find($idViaje);
+              $em -> remove($borrar);
+              $em->flush();
+          }
+
 
         return $this->render('editar/fichaViaje.html.twig', [
             'viajes' => $viajes,
