@@ -8,7 +8,18 @@
   $(document).ready(function(){
 
     $("#abrir").click(function(){
-      $(form).submit();
+
+      var a = $(".formDia").children('form');
+      a.submit();
+
+    })
+
+
+    $("#ingresar").click(function(){
+
+      var a = $(".formMov").children('form');
+      a.submit();
+
     })
 
     $("* .cerrar").click(function(){
@@ -31,15 +42,40 @@
         </button>
       </div>
       <div class="modal-body ">
-        <div class="form-group">
+        <div class="form-group formDia">
         {{ form_start(formIniDia) }}
         {{ form_widget(formIniDia) }}
-        {{ form_end(formIniDia) }}
+
       </div>
       </div>
       <div class="modal-footer">
-        <button id="abrir" type="button" class="btn btn-secondary" data-dismiss="modal">Abrir</button>
+        {{ form_widget(formIniDia.abrir) }}
+        {{ form_end(formIniDia) }}
       </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="movimientos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Movimiento de caja</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body ">
+        <div class="form-group formMov">
+        {{ form_start(formMov) }}
+        {{ form_widget(formMov) }}
+        {{ form_end(formMov) }}
+      </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -55,7 +91,7 @@
     <p>Total caja $</p>
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Cerrar día</button>
-    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Nuevo movimiento</button>
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#movimientos" data-whatever="@mdo">Nuevo movimiento</button>
 
 </div>
 
@@ -102,6 +138,12 @@
     <table class="table table-hover">
       <th>Detalle</th>
       <th>$</th>
+      {% for entrada in movimientoE %}
+        <tr>
+          <td>{{ entrada.detalle}}</td>
+          <td>{{ entrada.monto }}</td>
+        </tr>
+      {% endfor %}
     </table>
   </div>
 
@@ -116,6 +158,12 @@
     <table class="table table-hover">
       <th>Detalle</th>
       <th>$</th>
+      {% for salida in movimientoS %}
+        <tr>
+          <td>{{ salida.detalle}}</td>
+          <td>{{ salida.monto }}</td>
+        </tr>
+      {% endfor %}
     </table>
   </div>
 

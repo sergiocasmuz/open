@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit CuentasCorrientes{% endblock %}
+
+{% block body %}
+
+<div class="container">
+  <div class="jumbotron">
+    <h1 class="display-4">Editar Cuentas Corrientes</h1>
+    <p class="lead">La creación de cuentas corrientes tienen que ser autorizadas por le/s dueñe/s de la agencia.</p>
+    <hr class="my-4">
+
+    <!-- Button trigger modal -->
+    <a href="{{ path('cuentas_corrientes_index') }}" class="btn btn-info">Back to list</a>
+    {{ include('cuentas_corrientes/_delete_form.html.twig') }}
+
+</div>
+
+    {{ include('cuentas_corrientes/_form.html.twig', {'button_label': 'Update'}) }}
+
+
+  </div>
+{% endblock %}

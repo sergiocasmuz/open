@@ -48,7 +48,7 @@ class CierreController extends AbstractController
             $mov1 = new Cuentas();
             $mov1 -> setNroCuenta($idChofer);
             $mov1 -> setFecha($now);
-            $mov1 -> setDetalle("Deuda de comosión");
+            $mov1 -> setDetalle("Deuda de comisión");
             $mov1 -> setMonto($deuda * -1);
             $mov1 -> setODiaria($od);
 
@@ -59,7 +59,7 @@ class CierreController extends AbstractController
             $mov2 -> setNroCuenta($idChofer);
             $mov2 -> setFecha($now);
             $mov2 -> setMonto($deuda);
-            $mov2 -> setDetalle("Pago de deuda de comosión");
+            $mov2 -> setDetalle("Pago de deuda de comisión");
             $mov2 -> setODiaria($od);
 
             $em -> persist($mov2);

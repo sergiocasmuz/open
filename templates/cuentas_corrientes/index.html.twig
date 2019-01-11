@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CuentasCorrientes index{% endblock %}
+
+{% block body %}
+
+<div class="container">
+  <div class="jumbotron">
+    <h1 class="display-4">Cuentas Corrientes</h1>
+    <p class="lead">La creación de cuentas corrientes tienen que ser autorizadas por le/s dueñe/s de la agencia.</p>
+    <hr class="my-4">
+
+</div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Dni</th>
+                <th>Telefono</th>
+                <th>Estado</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for cuentas_corriente in cuentas_corrientes %}
+            <tr>
+                <td>{{ cuentas_corriente.id }}</td>
+                <td>{{ cuentas_corriente.nombre }}</td>
+                <td>{{ cuentas_corriente.apellido }}</td>
+                <td>{{ cuentas_corriente.dni }}</td>
+                <td>{{ cuentas_corriente.telefono }}</td>
+                <td>{{ cuentas_corriente.estado }}</td>
+                <td>
+                    <a href="{{ path('cuentas_corrientes_show', {'id': cuentas_corriente.id}) }}">show</a>
+                    <a href="{{ path('cuentas_corrientes_edit', {'id': cuentas_corriente.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">Sin registros</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('cuentas_corrientes_new') }}" class="btn btn-success">Create new</a>
+
+  </div>
+{% endblock %}

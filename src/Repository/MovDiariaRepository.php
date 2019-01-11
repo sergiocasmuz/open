@@ -19,22 +19,37 @@ class MovDiariaRepository extends ServiceEntityRepository
         parent::__construct($registry, MovDiaria::class);
     }
 
-    // /**
-    //  * @return MovDiaria[] Returns an array of MovDiaria objects
-    //  */
-    /*
-    public function findByExampleField($value)
+     /**
+      * @return MovDiaria[] Returns an array of MovDiaria objects
+      */
+
+    public function findBySalidas($od)
     {
         return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('m.monto < :val and m.oDiaria = :od')
+            ->setParameter('val', 0)
+            ->setParameter('od', $od)
             ->orderBy('m.id', 'ASC')
-            ->setMaxResults(10)
+            ->setMaxResults(100)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+
+
+    public function findByEntradas($od)
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.monto > :val and m.oDiaria = :od')
+            ->setParameter('val', 0)
+            ->setParameter('od', $od)
+            ->orderBy('m.id', 'ASC')
+            ->setMaxResults(100)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 
     /*
     public function findOneBySomeField($value): ?MovDiaria

@@ -66,6 +66,11 @@ class Viajes
      */
     private $oDiaria;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $cc;
+
 
     public function getId(): ?int
     {
@@ -190,6 +195,19 @@ class Viajes
     public function setODiaria(int $oDiaria): self
     {
         $this->oDiaria = $oDiaria;
+
+        return $this;
+    }
+
+
+    public function getCc(): ?int
+    {
+        return $this->cc;
+    }
+
+    public function setCc(int $cc): self
+    {
+        $this->cc = $cc;
 
         return $this;
     }

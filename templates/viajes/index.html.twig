@@ -95,6 +95,7 @@
 
       <table class="table table-hover">
         <tr>
+          <th style="text-align:center;">Nro Viaje</th>
           <th>Chofer</th>
           <th>Origen</th>
           <th>Destino</th>
@@ -110,6 +111,9 @@
         {% endif %}
 
             <tr style="background:{{ pendiente }};">
+              <td style="text-align:center;">
+                {{ viaje.id }}
+              </td>
               <td>
                 {{ viaje.chofer }}
               </td>

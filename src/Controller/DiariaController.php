@@ -10,9 +10,13 @@ use App\Entity\Choferes;
 use App\Entity\Viajes;
 use App\Entity\ChoferesDiaria;
 use App\Entity\OrdenDiaria;
+use App\Entity\MovDiaria;
 
 use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Doctrine\ORM\EntityRepository;
 
@@ -30,6 +34,44 @@ class DiariaController extends AbstractController
         $oDiaria = $em -> getRepository(OrdenDiaria::class) -> findByOD();
         $od = $oDiaria[0][1];
 
+        $movimientoE = $em -> getRepository(MovDiaria::class)->findByEntradas($od);
+        $movimientoS = $em -> getRepository(MovDiaria::class)->findBySalidas($od);
+
+        ///////////////////////MOVIMIENTOS
+        $formMov = $this -> createFormBuilder()
+        -> add('tipo', ChoiceType::class, array('choices' => array('----------------' => array(
+                                                                                            'Entrada'=>'entrada',
+                                                                                            'Salida'=>'salida') ),
+                                                                  'attr' => array('class' => 'form-control')  ))
+        -> add('detalle', TextareaType::class, array('attr' => array('class' => 'form-control')))
+        -> add('monto', IntegerType::class, array('attr' => array('class' => 'form-control')))
+        -> add('ingresar', SubmitType::class, array('attr' => array('class' => 'btn btn-primary')))
+
+        -> getForm()
+        -> handleRequest($request);
+
+          if ( $formMov->isSubmitted() && $formMov->isValid()) {
+
+              $r = $formMov -> getData();
+
+              if($r["monto"]!=0){
+
+              if($r["tipo"] == "entrada"){$monto = $r["monto"];}else{$monto = $r["monto"] *-1;}
+              $movDiaria = new MovDiaria();
+              $movDiaria -> setFecha(\DateTime::createFromFormat('Y-m-d', date("Y-m-d")));
+              $movDiaria -> setDetalle($r["detalle"]);
+              $movDiaria -> setMonto($monto);
+              $movDiaria -> setODiaria($od);
+              $em -> persist($movDiaria);
+              $em -> flush();
+
+              return $this->redirect("/diaria");
+
+            }
+          }
+          ///////////////////////
+
+
         $chofiDiaria = $em -> getRepository(ChoferesDiaria::class) -> findByODiaria($od);
 
         $list[""]="";
@@ -41,6 +83,7 @@ class DiariaController extends AbstractController
 
         $formIniDia = $this -> createFormBuilder()
         -> add ('chofer', ChoiceType::class, array('choices' => array('----------------' => $list ), 'attr' => array('class' => 'form-control')  ))
+        -> add('abrir', SubmitType::class, array('attr' => array('class' => 'btn btn-primary')))
         -> getForm()
         -> handleRequest($request);
 
@@ -61,6 +104,7 @@ class DiariaController extends AbstractController
             $abrir -> setEstado(0);
             $em->persist($abrir);
             $em->flush();
+            return $this->redirect("/diaria");
           }
 
         }
@@ -88,9 +132,13 @@ class DiariaController extends AbstractController
           $chofis[$chofer["id"]]["estado"] = $chofer["estado"];
         }
 
+
         return $this->render('diaria/index.html.twig', [
             'chofiDiaria' => $chofis,
-            'formIniDia' => $formIniDia -> createView()
+            'formMov' => $formMov -> createView(),
+            'formIniDia' => $formIniDia -> createView(),
+            'movimientoE' => $movimientoE,
+            'movimientoS' => $movimientoS,
         ]);
     }
 }

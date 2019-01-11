@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New CuentasCorrientes{% endblock %}
+
+{% block body %}
+  <div class="container">
+    <h1>Nueva Cuenta Corriente</h1>
+
+    {{ include('cuentas_corrientes/_form.html.twig') }}
+
+    <a href="{{ path('cuentas_corrientes_index') }}" class="btn btn-info">Back to list</a>
+  </div>
+
+{% endblock %}

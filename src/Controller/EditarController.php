@@ -21,6 +21,9 @@ use App\Entity\Choferes;
 use App\Entity\ChoferesDiaria;
 use App\Entity\OrdenDiaria;
 use App\Entity\Viajes;
+use App\Entity\CuentasCorrientes;
+use App\Entity\CCmovimientos;
+use App\Entity\Cuentas;
 
 class EditarController extends AbstractController
 {
@@ -63,6 +66,15 @@ class EditarController extends AbstractController
         $h =  $viajes -> getLlegada();
         $h2 = $h->format('H:i');
 
+        $cCorrientes = $em -> getRepository(CuentasCorrientes::class) -> findAll();
+
+        $CC = $em -> getRepository(CuentasCorrientes::class) -> find($viajes->getCc());
+
+        $listCC[$CC->getNombre()." ".$CC->getApellido()] = $viajes->getCc();
+        foreach ($cCorrientes as $cc) {
+        $listCC[$cc->getNombre()." ".$cc->getApellido()] = $cc->getId();
+        }
+
         $formulario = $this -> createFormBuilder()
         -> add('idViaje', HiddenType::class, array('attr'=> array('class' => 'form-control', 'value' => $viajes -> getId() ) ) )
         -> add('fecha', TextType::class, array('attr'=> array('class' => 'form-control', 'value' => $f1 ) ) )
@@ -72,6 +84,7 @@ class EditarController extends AbstractController
         -> add('llegada', TextType::class, array('attr'=> array('class' => 'form-control', 'value' => $h2 ) ) )
         -> add('monto', IntegerType::class, array('attr'=> array('class' => 'form-control', 'value' => $viajes -> getMonto() ) ) )
         -> add('chofer', ChoiceType::class,  array('choices' => array('----------------' => $list ), 'attr' => array('class' => 'form-control')  ))
+        -> add ('cc', ChoiceType::class, array('choices' => array('----------------' => $listCC), 'attr' => array('class' => 'form-control')))
         -> add('guardar', SubmitType::class, array('attr'=> array('class' => 'btn btn-primary') ))
         -> getForm()
         ->handleRequest($request);
@@ -93,9 +106,42 @@ class EditarController extends AbstractController
               $viaje -> setMonto($R["monto"]);
               $viaje -> setChofer($R["chofer"]);
               $viaje -> setODiaria($od[0][0]->getId());
+              $viaje -> setCc($R["cc"]);
 
               $em -> persist($viaje);
               $em -> flush();
+
+              $ccMov = $em -> getRepository(CCmovimientos::class) -> findByIdViaje($idViaje);
+          if($ccMov ==null){
+
+            $ccMov = new CCmovimientos();
+
+            $ccMov -> setIdViaje($viajes->getId());
+            $ccMov -> setfecha(\DateTime::createFromFormat('Y-m-d', date("Y-m-d")));
+            $ccMov -> setMonto($R["monto"]);
+            $ccMov -> setDetalle("Desde".$R["origen"]." hasta ".$R["destino"]);
+            $em -> persist($ccMov);
+            $em -> flush();
+
+          }
+            else{
+
+              $ccMov[0] -> setMonto($R["monto"]);
+              $ccMov[0] -> setDetalle("Desde".$R["origen"]." hasta ".$R["destino"]);
+              $em -> persist($ccMov[0]);
+              $em -> flush();
+
+              $cuentas = new Cuentas();
+              $cuentas -> setNroCuenta($R["chofer"]);
+              $cuentas -> setFecha(\DateTime::createFromFormat('Y-m-d', date("Y-m-d")));
+              $cuentas -> setMonto($R["monto"]);
+              $cuentas -> setODiaria($od[0][0]->getId());
+              $cuentas -> setDetalle("CC viaje #".$viajes->getId());
+              $em -> persist($cuentas);
+              $em -> flush();
+
+            }
+
 
               $link = '/viajes';
 
