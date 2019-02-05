@@ -34,7 +34,7 @@ class CierreController extends AbstractController
         $deuda = ($rec[0][1] * $choferes -> getPorcentaje()) / 100;
 
         $formCerrar = $this -> createFormBuilder()
-        -> add('total', TextType::class, array('attr' => array('value' => $deuda )))
+        -> add('total', HiddenType::class, array('attr' => array('value' => $deuda )))
         -> getForm($deuda)
         -> handleRequest($request);
 
@@ -85,7 +85,7 @@ class CierreController extends AbstractController
 
 
           $formAplazar = $this -> createFormBuilder()
-          -> add('totalAplazar', TextType::class, array('attr' => array('value' => $deuda )))
+          -> add('totalAplazar', HiddenType::class, array('attr' => array('value' => $deuda )))
           -> getForm()
           -> handleRequest($request);
 

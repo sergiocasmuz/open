@@ -26,7 +26,7 @@ class CuentasRepository extends ServiceEntityRepository
     public function findByIngresos($od)
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.oDiaria = :val and c.monto > 0')
+            ->andWhere("c.oDiaria = :val and c.monto > 0 ")
             ->setParameter('val', $od)
             ->select('SUM(c.monto) as suma')
             ->getQuery()

@@ -87,6 +87,8 @@ class DiariaController extends AbstractController
 
           $total = $entradas + $salidas;
 
+          print_r($sumaCuentas);
+
           $formCerrarDia = $this -> createFormBuilder()
           -> add('entradas', TextType::class, array('attr' => array('class' => 'form-control', 'value' => $sumaCuentas["suma"])))
           -> add('salidas', TextType::class, array('attr' => array('class' => 'form-control', 'value' => $sumaDeudas["suma"])))

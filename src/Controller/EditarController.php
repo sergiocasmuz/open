@@ -64,7 +64,7 @@ class EditarController extends AbstractController
 
         $cCorrientes = $em -> getRepository(CuentasCorrientes::class) -> findAll();
 
-        if($viajes->getCc() == null){$listCC[""] = "";}
+        if($viajes -> getCc() == null || $viajes->getCc() == "" ){$listCC[""] = "";}
           else{
             $CC = $em -> getRepository(CuentasCorrientes::class) -> find($viajes->getCc());
             $listCC[$CC->getNombre()." ".$CC->getApellido()] = $viajes->getCc();
@@ -106,16 +106,15 @@ class EditarController extends AbstractController
               $viaje -> setMonto($R["monto"]);
               $viaje -> setChofer($R["chofer"]);
               $viaje -> setODiaria($od[0][0]->getId());
-              if($R["cc"] == ""){}else{$viaje -> setCc($R["cc"]);}
 
+              if($R["cc"] == "" || $R["cc"] == null){$viaje -> setCc(0);} else{$viaje -> setCc($R["cc"]);}
 
               $em -> persist($viaje);
               $em -> flush();
 
               $ccMov = $em -> getRepository(CCmovimientos::class) -> findByIdViaje($idViaje);
 
-          if($ccMov ==null){
-
+          if($ccMov == null){
 
             $ccMov = new CCmovimientos();
 
@@ -142,12 +141,10 @@ class EditarController extends AbstractController
               $cuentas -> setIdViaje($viajes->getId());
               $em -> persist($cuentas);
               $em -> flush();
-
-
             }
 
-              $link = '/viajes';
-              return $this->redirect($link);
+             $link = '/viajes';
+             return $this->redirect($link);
 
           }
 
