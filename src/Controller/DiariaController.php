@@ -11,11 +11,13 @@ use App\Entity\Viajes;
 use App\Entity\ChoferesDiaria;
 use App\Entity\OrdenDiaria;
 use App\Entity\MovDiaria;
+use App\Entity\Cuentas;
 
 use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Doctrine\ORM\EntityRepository;
@@ -42,7 +44,8 @@ class DiariaController extends AbstractController
         -> add('tipo', ChoiceType::class, array('choices' => array('----------------' => array(
                                                                                             'Entrada'=>'entrada',
                                                                                             'Salida'=>'salida') ),
-                                                                  'attr' => array('class' => 'form-control')  ))
+                                                                'attr' => array('class' => 'form-control')  ))
+
         -> add('detalle', TextareaType::class, array('attr' => array('class' => 'form-control')))
         -> add('monto', IntegerType::class, array('attr' => array('class' => 'form-control')))
         -> add('ingresar', SubmitType::class, array('attr' => array('class' => 'btn btn-primary')))
@@ -68,9 +71,31 @@ class DiariaController extends AbstractController
               return $this->redirect("/diaria");
 
             }
-          }
-          ///////////////////////
 
+          }
+
+
+          //////////////resumen
+          $sumaCuentas = $em -> getRepository(Cuentas::class) -> findByIngresos($od);
+          $sumaDeudas = $em -> getRepository(Cuentas::class) -> findByDeudas($od);
+
+          $movEntradas = $em -> getRepository(MovDiaria::class) -> findByEntradasTotal($od);
+          $movSalidas = $em -> getRepository(MovDiaria::class)  -> findBySalidasTotal($od);
+
+          $entradas = $movEntradas["suma"] + $sumaCuentas["suma"];
+          $salidas = $movSalidas["suma"] + $sumaDeudas["suma"];
+
+          $total = $entradas + $salidas;
+
+          $formCerrarDia = $this -> createFormBuilder()
+          -> add('entradas', TextType::class, array('attr' => array('class' => 'form-control', 'value' => $sumaCuentas["suma"])))
+          -> add('salidas', TextType::class, array('attr' => array('class' => 'form-control', 'value' => $sumaDeudas["suma"])))
+          -> add('total', TextType::class)
+
+          -> getForm()
+          -> handleRequest($request);
+
+          if ( $formCerrarDia->isSubmitted() && $formCerrarDia->isValid()) {}
 
         $chofiDiaria = $em -> getRepository(ChoferesDiaria::class) -> findByODiaria($od);
 
@@ -112,6 +137,7 @@ class DiariaController extends AbstractController
         $sql = "SELECT * from choferes_diaria chD
                                 left join choferes ch on ch.id = chD.chofer_id
                                 where chD.o_diaria=? ";
+
         $stmt = $connection->prepare($sql);
         $stmt->bindValue(1, $od);
         $stmt->execute();
@@ -139,6 +165,10 @@ class DiariaController extends AbstractController
             'formIniDia' => $formIniDia -> createView(),
             'movimientoE' => $movimientoE,
             'movimientoS' => $movimientoS,
+            'formCerrarDia' => $formCerrarDia -> createView(),
+            'entradas' => $entradas,
+            'salidas' => $salidas,
+            'total' => $total
         ]);
     }
 }

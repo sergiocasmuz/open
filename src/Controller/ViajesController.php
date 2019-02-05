@@ -102,7 +102,7 @@ class ViajesController extends AbstractController
               $viajes -> setChofer($rta["chofer"]);
               $viajes -> setOp("0");
               $viajes -> setODiaria("8");
-              $viajes -> setCc($rta["cc"]);
+              //$viajes -> setCc($rta["cc"]);
 
               $em -> persist($viajes);
               $em -> flush();

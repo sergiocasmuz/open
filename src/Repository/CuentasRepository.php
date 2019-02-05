@@ -19,32 +19,36 @@ class CuentasRepository extends ServiceEntityRepository
         parent::__construct($registry, Cuentas::class);
     }
 
-    // /**
-    //  * @return Cuentas[] Returns an array of Cuentas objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+     /**
+      * @return Cuentas[] Returns an array of Cuentas objects
+      */
 
-    /*
-    public function findOneBySomeField($value): ?Cuentas
+    public function findByIngresos($od)
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('c.oDiaria = :val and c.monto > 0')
+            ->setParameter('val', $od)
+            ->select('SUM(c.monto) as suma')
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getOneOrNullResult();
         ;
     }
-    */
+
+
+
+    public function findByDeudas($od)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.oDiaria = :val')
+            ->setParameter('val', $od)
+            ->select('SUM(c.monto) as suma')
+            ->getQuery()
+            ->getOneOrNullResult();
+        ;
+    }
+
+
+
+
+
 }

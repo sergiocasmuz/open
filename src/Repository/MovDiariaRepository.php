@@ -36,6 +36,17 @@ class MovDiariaRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findBySalidasTotal($od)
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.monto < :val and m.oDiaria = :od')
+            ->setParameter('val', 0)
+            ->setParameter('od', $od)
+            ->select('SUM(m.monto) as suma')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 
     public function findByEntradas($od)
     {
@@ -47,6 +58,19 @@ class MovDiariaRepository extends ServiceEntityRepository
             ->setMaxResults(100)
             ->getQuery()
             ->getResult()
+        ;
+    }
+
+
+    public function findByEntradasTotal($od)
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.monto > :val and m.oDiaria = :od')
+            ->setParameter('val', 0)
+            ->setParameter('od', $od)
+            ->select('SUM(m.monto) as suma')
+            ->getQuery()
+            ->getOneOrNullResult();
         ;
     }
 

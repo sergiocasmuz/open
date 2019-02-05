@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,11 +34,11 @@ class CierreController extends AbstractController
         $deuda = ($rec[0][1] * $choferes -> getPorcentaje()) / 100;
 
         $formCerrar = $this -> createFormBuilder()
-        -> add('total', HiddenType::class, array('attr' => array('value' => $deuda )))
-        -> getForm()
+        -> add('total', TextType::class, array('attr' => array('value' => $deuda )))
+        -> getForm($deuda)
         -> handleRequest($request);
 
-          if ( $formCerrar->isSubmitted() && $formCerrar->isValid()) {
+          if ( $formCerrar->isSubmitted() && $formCerrar->isValid() ) {
 
             $rta = $formCerrar -> getData();
 
@@ -77,39 +76,59 @@ class CierreController extends AbstractController
 
             $chofiDiaria = $em -> getRepository(ChoferesDiaria::class) -> findByOrdenDiaria($idChofer,$od);
 
-
             $chofiDiaria[0] -> setEstado(1);
             $em -> persist($chofiDiaria[0]);
             $em -> flush();
 
             return $this->redirect("/diaria");
-
           }
 
+
           $formAplazar = $this -> createFormBuilder()
-          -> add('total1', HiddenType::class, array('attr' => array('value' => $deuda )))
+          -> add('totalAplazar', TextType::class, array('attr' => array('value' => $deuda )))
           -> getForm()
           -> handleRequest($request);
 
           if ( $formAplazar->isSubmitted() && $formAplazar->isValid()) {
 
-            $rta = $formCerrar -> getData();
+          $rta = $formAplazar -> getData();
 
-            $now = \DateTime::createFromFormat('Y-m-d', date("Y-m-d"));
+          $totalAplazar = $rta["totalAplazar"];
+          $now = \DateTime::createFromFormat('Y-m-d', date("Y-m-d"));
 
-            $mov1 = new Cuentas();
-            $mov1 -> setNroCuenta($idChofer);
-            $mov1 -> setFecha($now);
-            $mov1 -> setMonto($deuda * -1);
+          $mov1 = new Cuentas();
+          $mov1 -> setNroCuenta($idChofer);
+          $mov1 -> setFecha($now);
+          $mov1 -> setDetalle("Deuda de comisión");
+          $mov1 -> setMonto($totalAplazar * -1);
+          $mov1 -> setODiaria($od);
 
-            $em -> persist($mov1);
+          $em -> persist($mov1);
+          $em -> flush();
+
+          foreach ($viajes as $viaje) {
+
+            $editarOP = $em -> getRepository(Viajes::class) -> find($viaje -> getId());
+
+            $editarOP -> setOp($mov1->getId());
+            $editarOP -> setEstado(1);
+            $em -> persist($editarOP);
             $em -> flush();
+          }
 
-            $chofiDiaria = $em -> getRepository(ChoferesDiaria::class) -> find($idChofer);
-            $em -> remove($chofiDiaria);
-            $em -> flush();
+          $chofiDiaria = $em -> getRepository(ChoferesDiaria::class) -> findByOrdenDiaria($idChofer,$od);
+
+          $chofiDiaria[0] -> setEstado(2);
+          $em -> persist($chofiDiaria[0]);
+          $em -> flush();
+
+          return $this->redirect("/diaria");
 
           }
+
+
+
+
 
 
         return $this->render('cierre/resumen.html.twig', [

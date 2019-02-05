@@ -20,7 +20,7 @@ class CuentasCorrientesController extends AbstractController
      */
     public function index(CuentasCorrientesRepository $cuentasCorrientesRepository): Response
     {
-        return $this->render('cuentas_corrientes/index.html.twig', ['cuentas_corrientes' => $cuentasCorrientesRepository->findAll()]);
+        return $this->render('cuentas_corrientes/index.html.twig', ['cuentas_corrientes' => $cuentasCorrientesRepository -> findAll()]);
     }
 
     /**

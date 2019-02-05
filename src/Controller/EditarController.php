@@ -106,13 +106,16 @@ class EditarController extends AbstractController
               $viaje -> setMonto($R["monto"]);
               $viaje -> setChofer($R["chofer"]);
               $viaje -> setODiaria($od[0][0]->getId());
-              $viaje -> setCc($R["cc"]);
+              if($R["cc"] == ""){}else{$viaje -> setCc($R["cc"]);}
+
 
               $em -> persist($viaje);
               $em -> flush();
 
               $ccMov = $em -> getRepository(CCmovimientos::class) -> findByIdViaje($idViaje);
+
           if($ccMov ==null){
+
 
             $ccMov = new CCmovimientos();
 
@@ -125,7 +128,6 @@ class EditarController extends AbstractController
 
           }
             else{
-
               $ccMov[0] -> setMonto($R["monto"]);
               $ccMov[0] -> setDetalle("Desde".$R["origen"]." hasta ".$R["destino"]);
               $em -> persist($ccMov[0]);
@@ -140,6 +142,7 @@ class EditarController extends AbstractController
               $cuentas -> setIdViaje($viajes->getId());
               $em -> persist($cuentas);
               $em -> flush();
+
 
             }
 

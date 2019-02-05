@@ -59,6 +59,29 @@
 
 
 
+<div class="modal fade" id="cerrarModal" tabindex="-1" role="dialog" aria-labelledby="cerrarModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cerrarModalLabel">Cerrar diaria</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body ">
+        <div class="form-group formDia">
+        {{ form_start(formCerrarDia) }}
+        {{ form_label(formCerrarDia) }}
+
+      </div>
+      </div>
+      <div class="modal-footer">
+        {{ form_end(formCerrarDia) }}
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="movimientos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -88,9 +111,9 @@
     <h1 class="display-4">Planilla Diaria</h1>
     <p class="lead">No se podrá abrir planilla a los choferes que deban comisión.</p>
     <hr class="my-4">
-    <p>Total caja $</p>
+    <p>Total caja $ {{total}}</p>
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Cerrar día</button>
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#cerrarModal" data-whatever="@mdo">Cerrar día</button>
     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#movimientos" data-whatever="@mdo">Nuevo movimiento</button>
 
 </div>
@@ -98,7 +121,7 @@
 <div class="row">
   <div class="alert alert-info col-12">
     <h3>Entradas</h3>
-    <h4>Subtotal $</h4>
+    <h4>Subtotal $ {{entradas}}</h4>
     <hr>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Abrir planilla de chofer</button>
   </div>
@@ -120,9 +143,15 @@
     {% if  chofer["estado"]   == 0 %}
       {% set estado = "Cerrar" %}
       {% set btn = "danger" %}
-    {% else %}
+
+    {% elseif chofer["estado"]   == 1  %}
       {% set estado = "Cerrado" %}
       {% set btn = "success" %}
+
+      {% elseif chofer["estado"]   == 2  %}
+        {% set estado = "Aplazado" %}
+        {% set btn = "info" %}
+
     {% endif %}
 
     <tr>
@@ -150,7 +179,7 @@
   <div class="row">
     <div class="alert alert-info col-12">
       <h3>Salidas</h3>
-      <h4>Subtotal $</h4>
+      <h4>Subtotal $ {{salidas}}</h4>
       <hr>
 
     </div>
